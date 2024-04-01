@@ -274,10 +274,14 @@ if Code.ensure_loaded?(ConfigParser) do
     defp profile_from_config(profile_name) do
       section = profile_from_name(profile_name)
 
-      System.user_home()
-      |> Path.join(".aws/config")
+      aws_config_file()
       |> File.read()
       |> parse_ini_file(section)
+    end
+
+    defp aws_config_file() do
+      default_config = Path.join(System.user_home(), ".aws/config")
+      System.get_env("AWS_CONFIG_FILE", default_config)
     end
 
     defp profile_from_name(:system) do
